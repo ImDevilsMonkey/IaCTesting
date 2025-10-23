@@ -13,15 +13,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Bandit (lightweight)
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit
+
       - name: Run Codacy Analysis CLI and upload results
         uses: codacy/codacy-analysis-cli-action@v4
         with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}  
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           directory: .
+          tool: bandit
           upload: true
           allow-network: true
           verbose: true
-          max-allowed-issues: 2147483647
+          run-docker-tools: "false"
           skip-uncommitted-files-check: true
           skip-container-engine-check: true
           fail-if-incomplete: false
+          max-allowed-issues: 2147483647
